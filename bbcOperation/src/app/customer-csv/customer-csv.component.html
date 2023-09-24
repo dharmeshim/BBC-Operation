@@ -1,0 +1,40 @@
+<app-header></app-header>
+
+<div class="container">
+    <div class="card-container">
+        <h2>Upload Customer CSV File</h2>
+        <div class="file-instructions">
+            <p>Upload a CSV file containing customer data:</p>
+            <p>Customer Name, email, telephone, address</p>
+        </div>
+        <div class="file-container">
+            <input type="file" (change)="onFileSelected($event)" class="file" /><br /><br />
+            <button class="upload-button" (click)="uploadFile()">Upload</button>
+        </div>
+
+        <div class="file-instructions">
+            <p>Uploaded customers:</p>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email Address</th>
+                        <th>Mobile Number</th>
+                        <th>Address</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let customer of customers ;index as i">
+                        <td>{{ customer.name }}</td>
+                        <td>{{ customer.email }}</td>
+                        <td>{{ customer.telephone }}</td>
+                        <td>{{ customer.address}}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,59 @@
+<div class="container">
+    <div class="row">
+        <div class="col">
+
+            <div class="loginform">
+                <div class="main-div">
+                    <div class="panel">
+                        <h1>Login</h1>
+                        <hr>
+                        <p class="text-secondary" style="font-weight: bold;">
+                            Please enter your Employee ID</p>
+                    </div>
+
+                    <form #f="ngForm">
+                        <div class="form-group">
+                            <div class="input-group-prepend">
+                                <input #empid="ngModel" ngModel type="number" name="eid" class="form-control"
+                                    placeholder="Employee ID" required>
+                            </div>
+                            <div class="alert alert-danger" *ngIf="empid.touched && !empid.valid">
+                                Please Enter the Employee ID
+                            </div>
+                        </div>
+                    </form>
+
+
+                    <div *ngIf="!otpGenerated">
+                        <button (click)="generateOTP(empid.value)" class="btn btn-success" style="width: 100%;">
+                            Generate OTP
+                        </button>
+                    </div>
+
+                    <form *ngIf="otpGenerated">
+                        <div class="form-group">
+                            <div class="input-group-prepend">
+                                <input #empotp="ngModel" ngModel type="text" name="eotp" class="form-control" id="otp"
+                                    placeholder="OTP" required>
+                            </div>
+                            <div class="alert alert-danger" *ngIf="empotp.touched && !empotp.valid">
+                                Please Enter the OTP
+                            </div>
+                        </div>
+
+                        <div>
+                            <button (click)="onSubmit(empid.value, empotp.value)" class="btn btn-success"
+                                style="width: 100%;" [disabled]="!f.valid">Login</button>
+                        </div>
+                    </form>
+
+        
+                    
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>

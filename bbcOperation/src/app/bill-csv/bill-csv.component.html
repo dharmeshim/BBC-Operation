@@ -1,0 +1,44 @@
+<app-header></app-header>
+
+
+
+<div class="container">
+  <div class="card-container">
+    <h2>Upload Bill CSV File</h2>
+    <div class="file-instructions">
+      <p>Upload a CSV file containing bill data:</p>
+      <p>unitConsumption, durationOfBill, billDueDate, customerId</p>
+    </div>
+    <div class="file-container">
+      <input type="file" (change)="onFileSelected($event)" class="file" /><br /><br />
+      <button class="upload-button" (click)="uploadFile()">Upload</button>
+    </div>
+    <div class="file-instructions">
+      <p>Uploaded bills:</p>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Bill ID</th>
+            <th>Unit consumption</th>
+            <th>Duration Of Bill</th>
+            <th>Bill Due Date</th>
+            <th>Total Amount</th>
+            <th>Customer Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let bill of savedBills">
+            <td>{{ bill.billId }}</td>
+            <td>{{ bill.unitConsumption }}</td>
+            <td>{{ bill.durationOfBill | date:'mediumDate' }}</td>
+            <td>{{ bill.billDueDate | date:'mediumDate' }}</td>
+            <td>{{ bill.billAmount }}</td>
+            <td>{{ bill.customer.name }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 25px;
+
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
+
+.col {
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.mat-form-field {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+button {
+  width: 100%;
+  margin-top: 20px;
+  background-color: #2a2a2a;
+}

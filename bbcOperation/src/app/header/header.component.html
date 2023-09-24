@@ -1,0 +1,60 @@
+<mat-toolbar class="custom-toolbar">
+
+
+  <button mat-button routerLink="/home" class="custom-button">
+    Bharat Bijili Corporation
+  </button>
+
+
+
+  <button mat-button [matMenuTriggerFor]="customerMenu" class="custom-button">
+    <mat-icon class="custom-icon">people_outline</mat-icon> Customers
+  </button>
+
+
+  <button mat-button [matMenuTriggerFor]="billMenu" class="custom-button">
+    <mat-icon class="custom-icon">receipt</mat-icon> Bills
+  </button>
+
+  <button mat-button [matMenuTriggerFor]="transactionsMenu" class="custom-button">
+    <mat-icon class="custom-icon">account_balance_wallet</mat-icon> Transactions
+  </button>
+
+
+
+  <button mat-button [matMenuTriggerFor]="profileMenu" class="custom-button">
+    <mat-icon class="custom-icon">account_circle</mat-icon> Profile
+  </button>
+
+
+</mat-toolbar>
+
+
+
+
+<mat-menu #customerMenu="matMenu" class="custom-menu">
+  <button mat-menu-item (click)="redirectToHome()">Add Customer</button>
+  <button mat-menu-item (click)="onToUploadCustomerCsv()">Add Customer By CSV</button>
+  <button mat-menu-item (click)="onRedirectToAllCustomers()">List All Customers</button>
+</mat-menu>
+
+
+<mat-menu #billMenu="matMenu" class="custom-menu">
+  <button mat-menu-item (click)="redirectToAddBill()">Add a Bill</button>
+  <button mat-menu-item (click)="redirectToAddBillCsv()">Add Bill by CSV</button>
+  <button mat-menu-item (click)="redirectToPayBill()">Mark Bill as Cash</button>
+</mat-menu>
+
+
+<mat-menu #transactionsMenu="matMenu" class="custom-menu">
+  <button mat-menu-item (click)="redirectToTrasactions()">List All Transactions</button>
+  <button mat-menu-item (click)="redirectToCustomerTrasactions()">List Transactions by Customer ID</button>
+
+</mat-menu>
+
+
+<mat-menu #profileMenu="matMenu" class="custom-menu">
+  <button mat-menu-item (click)="redirectToDetails()">Details</button>
+  <button mat-menu-item (click)="redirectToLogOut()">Log out</button>
+
+</mat-menu>

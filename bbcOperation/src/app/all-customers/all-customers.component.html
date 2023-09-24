@@ -1,0 +1,44 @@
+<app-header></app-header>
+
+<h2>Customers List</h2>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <br>
+
+            <!-- <div class="form-group float-right" style="margin-top: 10px;">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" style="font-size: 1em;margin-right: 2px;">
+                        <i class="fa fa-search"></i></span>
+                    <input type="text" class="form-control" placeholder="Bill Id" style="width: min-content;"
+                        [(ngModel)]="BillID">
+                </div>
+            </div> -->
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <th>Customer ID</th>
+                        <th>Name</th>
+                        <th>Email Address</th>
+                        <th>Mobile Number</th>
+                        <th>Address</th>
+
+                    </thead>
+                    <tbody>
+                        <tr
+                            *ngFor="let customer of customers | paginate: { itemsPerPage: 12, currentPage: p }; index as i">
+                            <td>{{ customer.customerId }}</td>
+                            <td>{{ customer.name }}</td>
+                            <td>{{ customer.email }}</td>
+                            <td>{{ customer.telephone }}</td>
+                            <td>{{ customer.address}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <pagination-controls (pageChange)="p = $event"></pagination-controls>
+            </div>
+        </div>
+    </div>
+</div>

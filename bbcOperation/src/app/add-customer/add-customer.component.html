@@ -1,0 +1,62 @@
+<app-header></app-header>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2>Add Customer</h2>
+
+            <form #f="ngForm" (ngSubmit)="onSubmit(f)">
+
+                <mat-form-field appearance="outline" class="myclass" [color]="'accent'">
+                    <mat-label>Customer Name</mat-label>
+                    <input matInput type="text" placeholder="Enter the Customer Name" #customername="ngModel" ngModel
+                        name="name" [pattern]="NAME_PATTERN" required>
+
+                    <mat-error *ngIf="customername.touched && customername.errors?.pattern  && !customername.valid">
+                        Please Enter valid Name</mat-error>
+
+
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="myclass" [color]="'accent'">
+                    <mat-label>Customer Phone</mat-label>
+                    <input matInput type="number" minlength="10" maxlength="13"
+                        placeholder="Enter the Customer Phone No" #customerphone="ngModel" ngModel name="phoneno"
+                        [pattern]="PHONENUMBER_PATTERN" required>
+
+                    <mat-error *ngIf="customerphone.touched 
+                    && customerphone.errors?.pattern 
+                    && !customerphone.valid">
+                        Please Enter valid Phone Number</mat-error>
+
+                </mat-form-field>
+
+
+                <mat-form-field appearance="outline" class="myclass" [color]="'accent'">
+                    <mat-label>Customer Email Address</mat-label>
+                    <input matInput type="text" placeholder="Enter the Customer Email Id" #customermail="ngModel"
+                        ngModel name="emailId" [pattern]="EMAIL_PATTERN" required>
+
+                    <mat-error *ngIf="customermail.touched && customermail.errors?.pattern && !customermail.valid "> **
+                        Please Enter valid Mail id</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="myclass" [color]="'accent'">
+                    <mat-label>Customer Address</mat-label>
+                    <input matInput type="text" placeholder="Enter the Customer Address" #customeraddress="ngModel"
+                        ngModel name="address" required>
+
+                    <mat-error *ngIf="customeraddress.touched && !customeraddress.valid"> ** Please Enter the
+                        Adresss</mat-error>
+                </mat-form-field>
+
+
+                <button mat-raised-button color="primary" [disabled]="!f.valid">Save</button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

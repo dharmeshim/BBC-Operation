@@ -1,0 +1,47 @@
+<app-header></app-header>
+
+
+<div class="container mt-5">
+    <h2>Mark Bill as Paid</h2>
+
+    <div class="form-group">
+        <!-- <label for="customerId">Customer ID:</label> -->
+        <input type="number" class="form-control" id="customerId" [(ngModel)]="customerId"
+            placeholder="Enter Customer ID">
+        <button class="btn btn-primary" [disabled]="!customerId" (click)="loadBills()">Load Bills</button>
+    </div>
+
+    <div class="table-responsive" *ngIf="bills && bills.length > 0">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <th>Bill ID</th>
+                <th>Unit consumption</th>
+                <th>Duration Of Bill</th>
+                <th>Bill Due Date</th>
+                <th>Total Amount</th>
+                <th>Amount After Discount</th>
+                <th>Customer Name</th>
+                <th>Action</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let bill of bills | paginate: { itemsPerPage: 12, currentPage: p }; index as i">
+                    <td>{{ bill.billId }}</td>
+                    <td>{{ bill.unitConsumption }}</td>
+                    <td>{{ bill.durationOfBill | date:'mediumDate' }}</td>
+                    <td>{{ bill.billDueDate | date:'mediumDate' }}</td>
+                    <td>{{ bill.billAmount }}</td>
+                    <td>{{ calculateAmountAfterDiscount(bill) }}</td>
+                    <td>{{ bill.customer.name }}</td>
+                    
+                    <td><button class="btn btn-primary" (click)="payBill(bill)">Pay</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    </div>
+
+    <div *ngIf="!bills || bills.length === 0">
+        <p>No bills to display.</p>
+    </div>
+
+</div>
