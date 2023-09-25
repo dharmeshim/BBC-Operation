@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { HttpService } from '../http.service';
 import { Router } from '@angular/router';
@@ -19,6 +19,7 @@ export class AddCustomerComponent implements OnInit {
 
   NAME_PATTERN: string = "^[A-Za-z\\s'-]+$";
 
+  @ViewChild('f') customerForm!: NgForm;
 
   constructor(private service: HttpService,
     private router: Router,
@@ -43,6 +44,7 @@ export class AddCustomerComponent implements OnInit {
       .subscribe((response: any) => {
         if (response === 'true') {
           this.toaster.success('Added Successfully!!!');
+          this.customerForm.resetForm();
         } else if (response === 'false') {
           this.toaster.error('Customer already exists with this Mobile number!!!');
         }
