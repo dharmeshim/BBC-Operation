@@ -2,7 +2,6 @@ package com.finzly.bbcops.entities;
 
 import java.time.LocalDate;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -30,7 +29,7 @@ public class PaymentTransaction {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToOne(cascade = CascadeType.ALL) 
+    @OneToOne
     private Bill bill;
 
 	public PaymentTransaction() {

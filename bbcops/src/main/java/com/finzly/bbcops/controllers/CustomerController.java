@@ -30,7 +30,7 @@ public class CustomerController {
 
 	//add new customer
 	@PostMapping("/add-new")
-	public ResponseEntity<Boolean> addNewCustomer(@RequestBody Customer customer) {
+	public boolean addNewCustomer(@RequestBody Customer customer) {
 		return customerService.addNewCustomer(customer);
 	}
 
@@ -39,7 +39,6 @@ public class CustomerController {
 	public ResponseEntity<List<Customer>> addCustomersByFile(@RequestParam("file") MultipartFile file)
 			throws IOException {
 		return customerService.uploadCustomersFromCSV(file);
-
 	}
 
 	//get all customers

@@ -5,9 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import com.finzly.bbcops.dao.PaymentTransactionDao;
-import com.finzly.bbcops.entities.Customer;
 import com.finzly.bbcops.entities.PaymentTransaction;
 
 @Service
@@ -36,7 +34,5 @@ public class PaymentTransationService {
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-
 	}
-
 }

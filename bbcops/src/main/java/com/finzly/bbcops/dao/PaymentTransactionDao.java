@@ -30,8 +30,8 @@ public class PaymentTransactionDao {
 		transaction.commit();
 		session.close();
 		return true;
-
 	}
+	
 
 	public List<PaymentTransaction> getAllTrasactions() {
 		Session session = sessionFactory.openSession();
@@ -41,6 +41,7 @@ public class PaymentTransactionDao {
 		return trasactions;
 	}
 
+	
 	public List<PaymentTransaction> getTransactionsByCustomer(long customerId) {
 		Session session = sessionFactory.openSession();
 		try {
@@ -52,5 +53,4 @@ public class PaymentTransactionDao {
 			session.close();
 		}
 	}
-
 }

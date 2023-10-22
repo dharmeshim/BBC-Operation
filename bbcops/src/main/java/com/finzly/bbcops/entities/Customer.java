@@ -2,7 +2,6 @@ package com.finzly.bbcops.entities;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -32,12 +31,12 @@ public class Customer {
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "customer", 
-				cascade = CascadeType.ALL, 
 				fetch = FetchType.LAZY)
 	private List<Bill> bills;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "customer")
+	@OneToMany(mappedBy = "customer",
+			   fetch = FetchType.LAZY)
 	private List<PaymentTransaction> paymentTransactions;
 
 	public Customer() {

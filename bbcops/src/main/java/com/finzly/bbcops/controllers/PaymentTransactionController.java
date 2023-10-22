@@ -2,6 +2,7 @@ package com.finzly.bbcops.controllers;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +15,12 @@ import com.finzly.bbcops.services.PaymentTransationService;
 
 @CrossOrigin
 @RestController
-@RequestMapping("trasaction")
+@RequestMapping("/api/v1/trasaction")
 public class PaymentTransactionController {
 
 	private final PaymentTransationService paymentTransationService;
 
+	@Autowired 
 	public PaymentTransactionController(PaymentTransationService paymentTransationService) {
 		this.paymentTransationService = paymentTransationService;
 	}

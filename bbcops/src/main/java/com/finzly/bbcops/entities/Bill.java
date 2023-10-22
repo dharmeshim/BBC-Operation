@@ -1,17 +1,13 @@
 package com.finzly.bbcops.entities;
 
 import java.time.LocalDate;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -29,17 +25,15 @@ public class Bill {
 	private double amountForEarlyPay;
 	private double amountForBothDiscount;
 
-//	@JsonIgnore 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
 
 	@JsonIgnore
-	@OneToOne(mappedBy = "bill", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "bill")
 	private PaymentTransaction paymentTransaction;
 
 	public Bill() {
-
 	}
 
 	public Bill(double unitConsumption, 

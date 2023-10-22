@@ -31,7 +31,6 @@ public class BillController {
 		this.billService = billService;
 	}
 
-	
 	//create new bill
 	@PostMapping("/create")
 	public boolean createNewBill(@RequestBody Bill bill) {

@@ -55,25 +55,17 @@ public class CustomerDao {
 			session.close();
 		} catch (Exception e) {
 			logger.error("Exception : " + e);
-			throw e;
 		}
-
 	}
 
-	public boolean saveAllCustomers(List<Customer> customers) {
-		try {
-			Session session = sessionFactory.openSession();
-			Transaction transaction = session.beginTransaction();
-
+	public void saveAllCustomers(List<Customer> customers) {
+		try (Session session = sessionFactory.openSession()) {
 			for (Customer customer : customers) {
 				session.save(customer);
+				mailService.sendMailAboutCustomerAdded(customer);
 			}
-			transaction.commit();
-			session.close();
-			return true;
 		} catch (Exception e) {
-			logger.error("Exception: " + e);
-			throw e;
+			logger.error(e.getMessage());
 		}
 	}
 

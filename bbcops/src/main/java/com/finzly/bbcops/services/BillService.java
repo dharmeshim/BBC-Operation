@@ -30,6 +30,8 @@ import com.finzly.bbcops.entities.Customer;
 
 import com.finzly.bbcops.util.PaymentType;
 import com.finzly.bbcops.util.constants.BillConstants;
+import com.finzly.bbcops.util.constants.CsvParseConstants;
+import com.finzly.bbcops.util.constants.DateConstants;
 
 @Service
 public class BillService {
@@ -47,22 +49,26 @@ public class BillService {
 		this.billDao = billDao;
 		this.customerService = customerService;
 		this.paymentTransactionDao = paymentTransactionDao;
-
 	}
 
 	public boolean validateBillAndStore(Bill bill) {
 		long customerId = bill.getCustomer().getCustomerId();
 		if (customerService.doesCustomerExist(customerId)) {
 
-			Bill generatedBill = generateBillAmounts(bill);
+			Bill generatedBill = generateDateAndAmounts(bill);
 			return billDao.createNewBill(generatedBill);
 		} else {
 			return false;
 		}
 	}
 
-	private Bill generateBillAmounts(Bill bill) {
+	private Bill generateDateAndAmounts(Bill bill) {
+		LocalDate today = LocalDate.now();
+		bill.setDurationOfBill(today);
+		return generateBillAmounts(bill);
+	}
 
+	private Bill generateBillAmounts(Bill bill) {
 		double unitConsumed = bill.getUnitConsumption();
 		double chargePerKw = BillConstants.BILLING_RATE_PER_KW;
 		double billAmount = unitConsumed * chargePerKw;
@@ -70,7 +76,6 @@ public class BillService {
 		bill.setAmountForEarlyPay(discountForEarlyPayment(billAmount));
 		bill.setAmountForOnlinePay(discountForOnlinePayment(billAmount));
 		bill.setAmountForBothDiscount(discountForBothOnlineAndEarlyPayment(billAmount));
-
 		return bill;
 	}
 
@@ -109,18 +114,15 @@ public class BillService {
 			paymentTransaction.setPaymentType(PaymentType.CASH);
 			paymentTransaction.setCustomer(bill.getCustomer());
 			paymentTransaction.setBill(bill);
-
 			paymentTransactionDao.savePaymentTransaction(paymentTransaction);
 			bill.setPaymentTransaction(paymentTransaction);
 		}
-
 		bill.setPaid(true);
 		billDao.updateBill(bill);
 		return true;
 	}
 
 	private double checkAndDiscountForEarlyPayment(Bill bill) {
-
 		LocalDate today = LocalDate.now();
 		LocalDate billDueDate = bill.getBillDueDate();
 		double totalAmount = bill.getBillAmount();
@@ -145,38 +147,43 @@ public class BillService {
 	}
 
 	private List<Bill> parseCsvToBills(InputStream inputStream) throws IOException {
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("M/d/yyyy"); // the date format
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DateConstants.DATE_FORMAT);
 
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+				@SuppressWarnings("deprecation")
 				CSVParser csvParser = new CSVParser(reader,
-						CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim())) {
+						CSVFormat.DEFAULT
+						.withFirstRecordAsHeader()
+						.withIgnoreHeaderCase()
+						.withTrim())) {
 
 			List<Bill> bills = new ArrayList<>();
-
-			int skipedBills = 0;
 			for (CSVRecord record : csvParser) {
 				try {
-					double unitConsumption = Double.parseDouble(record.get("unitConsumption"));
-					LocalDate durationOfBill = LocalDate.parse(record.get("durationOfBill"), dateFormatter);
-					LocalDate billDueDate = LocalDate.parse(record.get("billDueDate"), dateFormatter);
-					long customerId = Long.parseLong(record.get("customerId"));
+					double unitConsumption = Double.parseDouble(
+							record.get(CsvParseConstants.UNIT_CONSUMPTION));
+					LocalDate durationOfBill = LocalDate.parse(
+							record.get(CsvParseConstants.BILL_DURATION),
+							dateFormatter);
+					LocalDate billDueDate = LocalDate.parse(
+							record.get(CsvParseConstants.BILL_DUE_DATE), dateFormatter);
+					long customerId = Long.parseLong(
+							record.get(CsvParseConstants.BILL_CUSTOMERID));
 
-					if (record.isSet("unitConsumption") && record.isSet("durationOfBill") && record.isSet("billDueDate")
-							&& record.isSet("customerId")) {
+					if (record.isSet(CsvParseConstants.UNIT_CONSUMPTION)
+							&& record.isSet(CsvParseConstants.BILL_DURATION)
+							&& record.isSet(CsvParseConstants.BILL_DUE_DATE)
+							&& record.isSet(CsvParseConstants.BILL_CUSTOMERID)) {
 
 						Customer customer = customerService.getCustomerById(customerId);
 						if (customer != null) {
 							Bill bill = new Bill(unitConsumption, durationOfBill, billDueDate, customer);
 							bill = generateBillAmounts(bill);
 							bills.add(bill);
-						} else {
-							skipedBills++;
 						}
-					} else {
-						skipedBills++;
 					}
-				} catch (NumberFormatException | DateTimeParseException e) {
-					skipedBills++;
+				} catch (DateTimeParseException | IllegalArgumentException e) {
+					logger.error(e.getMessage());
 				}
 			}
 			return bills;

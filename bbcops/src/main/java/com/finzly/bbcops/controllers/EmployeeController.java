@@ -15,7 +15,7 @@ import com.finzly.bbcops.services.EmployeeService;
 
 @CrossOrigin()
 @RestController
-@RequestMapping("/employee")
+@RequestMapping("/api/v1/employee")
 public class EmployeeController {
 
 	private final EmployeeService employeeService;
@@ -24,8 +24,6 @@ public class EmployeeController {
 	public EmployeeController(EmployeeService employeeService) {
 		this.employeeService = employeeService;
 	}
-
-	
 
 	//send OTP for login
 	@GetMapping("/login/send-otp/{employeeId}")

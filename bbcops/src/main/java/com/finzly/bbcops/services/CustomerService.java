@@ -24,6 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.finzly.bbcops.dao.CustomerDao;
 import com.finzly.bbcops.entities.Bill;
 import com.finzly.bbcops.entities.Customer;
+import com.finzly.bbcops.util.constants.CsvParseConstants;
+import com.finzly.bbcops.util.constants.PatternConstants;
 
 @Service
 public class CustomerService {
@@ -36,26 +38,26 @@ public class CustomerService {
 		this.customerDao = customerDao;
 	}
 
-	public ResponseEntity<Boolean> addNewCustomer(Customer customer) {
+	public boolean addNewCustomer(Customer customer) {
 		if (!doesCustomerExist(customer)) {
 			customerDao.saveCustomer(customer);
-			return new ResponseEntity<>(true, HttpStatus.OK);
+			return true;
 		} else {
-			return new ResponseEntity<>(false, HttpStatus.ALREADY_REPORTED);
+			return false;
 		}
 	}
 
 	public ResponseEntity<List<Customer>> uploadCustomersFromCSV(MultipartFile file) throws IOException {
 		if (isValidCsvFormat(file)) {
 			List<Customer> customersToAdd = parseCsvToCustomers(file.getInputStream());
-			saveAllCustomers(customersToAdd);
-
+		    customerDao.saveAllCustomers(customersToAdd);
 			return new ResponseEntity<>(customersToAdd, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
 	}
 
+	
 	private List<Customer> parseCsvToCustomers(InputStream inputStream) throws IOException {
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 				CSVParser csvParser = new CSVParser(reader,
@@ -66,32 +68,25 @@ public class CustomerService {
 
 			List<Customer> customers = new ArrayList<>();
 			for (CSVRecord csvRecord : csvParser) {
-				String name = csvRecord.get("Customer Name");
-				String email = csvRecord.get("email");
-				String telephone = csvRecord.get("telephone");
-				String address = csvRecord.get("address");
+				try {
+					String name = csvRecord.get(CsvParseConstants.CUSTOMER_NAME);
+					String email = csvRecord.get(CsvParseConstants.CUSTOMER_EMAIL);
+					String telephone = csvRecord.get(CsvParseConstants.CUSTOMER_TELEPHONE);
+					String address = csvRecord.get(CsvParseConstants.CUSTOMER_ADDRESS);
 
-				Customer customer = new Customer(name, email, telephone, address);
-				customers.add(customer);
+					if (isValidCustomerName(name) && isValidMobileNumber(telephone) && isValidEmail(email)) {
+						Customer customer = new Customer(name, email, telephone, address);
+						if (!doesCustomerExist(customer)) {
+							customers.add(customer);
+						}
+					}
+				} catch (Exception e) {
+				}
 			}
 			return customers;
 		}
 	}
-
-	private List<Customer> saveAllCustomers(List<Customer> customers) {
-		List<Customer> notSavedCustomers = new ArrayList<>();
-
-		for (Customer customer : customers) {
-			if (!doesCustomerExist(customer)) {
-				customerDao.saveCustomer(customer);
-			} else {
-				notSavedCustomers.add(customer);
-			}
-		}
-		return notSavedCustomers;
-	}
 	
-
 	public boolean doesCustomerExist(Customer customer) {
 		String customerPhoneNumber = customer.getTelephone();
 		Customer customerInTable = customerDao.getCustomerByPhoneNumber(customerPhoneNumber);
@@ -128,4 +123,17 @@ public class CustomerService {
 	public Customer getCustomerById(long customerId) {
 		return customerDao.getCustomerById(customerId);
 	}
+
+	private boolean isValidCustomerName(String name) {
+		return name.matches(PatternConstants.NAME_PATTERN);
+	}
+
+	private boolean isValidMobileNumber(String mobileNumber) {
+		return mobileNumber.matches(PatternConstants.PHONENUMBER_PATTERN);
+	}
+
+	private boolean isValidEmail(String email) {
+		return email.matches(PatternConstants.EMAIL_PATTERN);
+	}
+
 }
